@@ -1,0 +1,102 @@
+\documentclass[10pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTS
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{blindtext}
+\usepackage{enumitem}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{mathrsfs}
+\usepackage[parfill]{parskip}
+\usepackage[section]{placeins}
+\usepackage{titling}
+\usepackage{wrapfig}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMMANDS
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\class}{computational physics}
+\newcommand{\problemterm}{\begin{center}\vspace{0.25cm}* * *\vspace{1cm}\end{center}}
+\newcommand{\D}{\mathrm{d}}
+
+\newcounter{problem}
+\newenvironment{problem}{\stepcounter{problem}\textbf{PROBLEM \theproblem}: \begin{itshape}}{\end{itshape}\vspace{0.5cm}}
+
+\pretitle{\begin{center}\sf\textsc{\LARGE\class\vspace{0.2em}}\hrule\vspace{0.3em}\Large}
+\posttitle{\end{center}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% METADATA
+\title{Problem Set 7}
+\author{Patrick Anker}
+\date{October 27, 2017}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+\begin{document}
+{\fontfamily{lmss}\selectfont
+
+\maketitle
+
+\begin{problem}
+  Analytically solve the heat equation
+  \begin{equation}
+  	\frac{\partial u(x, t)}{\partial t} = \alpha \frac{\partial^2 u(x, t)}{\partial x^2} \label{eq:heat1d}
+  \end{equation}
+  for a rod of length $L$ with Neumann boundary conditions $$\frac{\partial u(0,t)}{\partial x} = \frac{\partial u(L,t)}{\partial x} = 0$$ using the method of separation of variables.
+\end{problem}
+
+For the separation of variables, we assume that $u(x,t)$ is of the form $$u(x,t) = f(x)g(t)$$ By plugging this substitution into the 1D heat equation (Eq. \ref{eq:heat1d}), we get this expression:
+\[f(x)\frac{\partial g}{\partial t} = \alpha\ g(t) \frac{\partial^2 f}{\partial x^2}\] If we divide this equation by $u(x,t)$, the equation becomes a useful form:
+\begin{align*}
+  \frac{1}{u}\left(f(x)\frac{\partial g}{\partial t}\right) &= \frac{1}{u}\left(\alpha\ g(t)\frac{\partial^2 f}{\partial x^2}\right) \\
+  \frac{\dot{g}}{g} &= \alpha\ \frac{f^{\prime \prime}}{f} \numberthis \label{eq:sep-useful}
+\end{align*}
+where the dot implies a time derivative and the double prime implies two spacial derivatives. For this to be a physical solution -- that is, if an expression that involves dimensions of time were to equal an expression that involves dimensions of space -- the two sides of Eq. \ref{eq:sep-useful} must be constant: \[\frac{\dot{g}}{g} = \alpha\ \frac{f^{\prime \prime}}{f} = c\]
+
+We now can work with each side individually. The time-dependent function $g(t)$ is the easiest to work with; simply use the method ``separate-integrate:''
+\begin{align*}
+  \frac{\D g/\D t}{g} &= c \\
+  \frac{\D g}{g} &= c\D t \\
+  \Rightarrow g(t) = G_0 e^{ct}
+\end{align*}
+
+Since the Neumann boundary conditions only apply to the spacial dependence, this form of $g(t)$ is completely specified. $k$ will be determined via the spacial dependence:
+\begin{align*}
+  \alpha\ \frac{f^{\prime \prime}}{f} &= c \\
+  f^{\prime \prime} &= \frac{c}{\alpha}f
+\end{align*}
+Solutions to this differential equation follow the form: \[f(x) = Ae^{x\sqrt{c/\alpha}} + Be^{-x\sqrt{c/\alpha}}\] From the boundary conditions, we can limit this further:
+\begin{align*}
+  \frac{\partial u(0, t)}{\partial x} &= \frac{\partial u(L, t)}{\partial x} = 0 \\
+  g(t)f^{\prime}(0) &= g(t)f^{\prime}(L) = 0 \\
+  f^{\prime}(0) = f^{\prime}(L) = 0 \\
+  \rightarrow A\sqrt{\frac{c}{\alpha}} &- B\sqrt{\frac{c}{\alpha}} = 0 \Rightarrow A = B \\
+\end{align*}
+Now let's consider the other boundary $f^{\prime}(L) = 0$:
+\[A\sqrt{\frac{c}{\alpha}}e^{L\sqrt{c/\alpha}} - A\sqrt{\frac{c}{\alpha}}e^{-L\sqrt{c/\alpha}}= 0\]
+For this to work, either $c$ is (trivially) 0 \textit{or} $c$ is negative; this would yield oscillatory behavior. Let $k^2 = \left|\frac{c}{\alpha}\right|$ and substitute in:
+\begin{align*}
+  Ak e^{i kL} - Ak e^{-i kL} &= 0 \\
+  2i Ak\sin(kL) &= 0 \\
+  \sin(kL) &= 0 \\
+  \rightarrow kL &= n\pi \\
+  k^2 &= \frac{n^2 \pi^2}{L^2} \\
+  \Rightarrow c &= -\frac{\alpha n^2 \pi^2}{L^2}
+\end{align*}
+
+This $\sin$ showed up for the \textit{derivative} of $f(x)$. Furthermore, this is just for \textit{one} eigenvector. The total spectrum of solutions make up the open domain where $n\in(-\infty, \infty)\,\&\,n\in\mathbb{Z}$. This means the full solution $u(x,t)$ is:
+\begin{equation}
+  u(x, t) = \sum_{n=-\infty}^{\infty}C_n\exp\left[-\frac{\alpha n^2 \pi^2}{L^2} t\right]\cos\left(\frac{n\pi}{L}x\right)
+\end{equation}
+where  $C_n$ are just some constants that can be chosen at will.
+
+\problemterm
+
+}
+\end{document}
